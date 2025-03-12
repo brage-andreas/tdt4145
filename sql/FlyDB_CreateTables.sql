@@ -42,6 +42,7 @@ CREATE TABLE
 
 CREATE TABLE
   Flyrute (
+    FlyruteId INT NOT NULL,
     Flyrutenummer INT NOT NULL,
     Ukedagskode INT,
     PlanlagtAvgangstid DATETIME,
@@ -49,7 +50,7 @@ CREATE TABLE
     StartFlyplass VARCHAR(10) NOT NULL,
     SluttFlyplass VARCHAR(10) NOT NULL,
     Flytype VARCHAR(50) NOT NULL,
-    PRIMARY KEY (Flyrutenummer),
+    PRIMARY KEY (FlyruteId),
     FOREIGN KEY (StartFlyplass) REFERENCES Flyplass (Flyplasskode),
     FOREIGN KEY (SluttFlyplass) REFERENCES Flyplass (Flyplasskode),
     FOREIGN KEY (Flytype) REFERENCES Flytype (Navn)
@@ -57,17 +58,13 @@ CREATE TABLE
 
 CREATE TABLE
   Mellomlanding (
-    Flyrutenummer INT NOT NULL,
+    FlyruteId INT NOT NULL,
     PlanlagtAvgangstid DATETIME NOT NULL,
     PlanlagtAnkomsttid DATETIME NOT NULL,
     Flyplasskode VARCHAR(10) NOT NULL,
     Registreringsnummer VARCHAR(50),
-    PRIMARY KEY (
-      Flyrutenummer,
-      PlanlagtAvgangstid,
-      PlanlagtAnkomsttid
-    ),
-    FOREIGN KEY (Flyrutenummer) REFERENCES Flyrute (Flyrutenummer),
+    PRIMARY KEY (FlyruteId, PlanlagtAvgangstid, PlanlagtAnkomsttid),
+    FOREIGN KEY (FlyruteId) REFERENCES Flyrute (FlyruteId),
     FOREIGN KEY (Flyplasskode) REFERENCES Flyplass (Flyplasskode)
   );
 
@@ -95,14 +92,14 @@ CREATE TABLE
 
 CREATE TABLE
   Flyvning (
-    Flyrutenummer INT NOT NULL,
+    FlyruteId INT NOT NULL,
     Løpenummer INT NOT NULL,
     StatusId INT NOT NULL,
     FaktiskAvgangstid DATETIME,
     FaktiskAnkomsttid DATETIME,
     Flyregistreringsnummer VARCHAR(50) NOT NULL,
-    PRIMARY KEY (Flyrutenummer, Løpenummer),
-    FOREIGN KEY (Flyrutenummer) REFERENCES Flyrute (Flyrutenummer),
+    PRIMARY KEY (FlyruteId, Løpenummer),
+    FOREIGN KEY (FlyruteId) REFERENCES Flyrute (FlyruteId),
     FOREIGN KEY (StatusId) REFERENCES FlyvningStatus (StatusId),
     FOREIGN KEY (Flyregistreringsnummer) REFERENCES Fly (Registreringsnummer)
   );
@@ -192,9 +189,9 @@ CREATE TABLE
 CREATE TABLE
   Delreise (
     DelreiseId INT NOT NULL,
-    Flyrute INT NOT NULL,
+    FlyruteId INT NOT NULL,
     PRIMARY KEY (DelreiseId),
-    FOREIGN KEY (Flyrute) REFERENCES Flyrute (Flyrutenummer)
+    FOREIGN KEY (FlyruteId) REFERENCES Flyrute (FlyruteId)
   );
 
 CREATE TABLE
@@ -224,10 +221,10 @@ CREATE TABLE
 
 CREATE TABLE
   BillettFlyvning (
-    Flyrutenummer INT NOT NULL,
+    FlyruteId INT NOT NULL,
     Løpenummer INT NOT NULL,
     BillettReferanseNummer INT NOT NULL,
-    PRIMARY KEY (Flyrutenummer, Løpenummer, BillettReferanseNummer),
-    FOREIGN KEY (Flyrutenummer, Løpenummer) REFERENCES Flyvning (Flyrutenummer, Løpenummer),
+    PRIMARY KEY (FlyruteId, Løpenummer, BillettReferanseNummer),
+    FOREIGN KEY (FlyruteId, Løpenummer) REFERENCES Flyvning (FlyruteId, Løpenummer),
     FOREIGN KEY (BillettReferanseNummer) REFERENCES Billettbestilling (Referansenummer)
   );
