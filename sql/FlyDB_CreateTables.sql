@@ -18,10 +18,19 @@ CREATE TABLE
     Navn VARCHAR(50) NOT NULL,
     FørsteProdÅr INT,
     SisteProdÅr INT,
-    SeteKonfig VARCHAR(50),
+    SetekonfigurasjonId INT NOT NULL,
     FlyprodusentNavn VARCHAR(50) NOT NULL,
     PRIMARY KEY (Navn),
-    FOREIGN KEY (FlyprodusentNavn) REFERENCES Flyprodusent (Navn) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (FlyprodusentNavn) REFERENCES Flyprodusent (Navn) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (SetekonfigurasjonId) REFERENCES Setekonfigurasjon (Id)
+  );
+
+CREATE TABLE
+  Setekonfigurasjon (
+    Id INT NOT NULL,
+    Rader INT NOT NULL,
+    SeteKonfig VARCHAR(300) NOT NULL,
+    PRIMARY KEY (Id)
   );
 
 CREATE TABLE
@@ -57,18 +66,6 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  Mellomlanding (
-    FlyruteId INT NOT NULL,
-    PlanlagtAvgangstid DATETIME NOT NULL,
-    PlanlagtAnkomsttid DATETIME NOT NULL,
-    Flyplasskode VARCHAR(10) NOT NULL,
-    Registreringsnummer VARCHAR(50),
-    PRIMARY KEY (FlyruteId, PlanlagtAvgangstid, PlanlagtAnkomsttid),
-    FOREIGN KEY (FlyruteId) REFERENCES Flyrute (FlyruteId),
-    FOREIGN KEY (Flyplasskode) REFERENCES Flyplass (Flyplasskode)
-  );
-
-CREATE TABLE
   FlyvningStatus (
     StatusId INT NOT NULL,
     Status VARCHAR(50),
@@ -84,7 +81,6 @@ CREATE TABLE
     FlytypeNavn VARCHAR(50) NOT NULL,
     FlyselskapKode VARCHAR(10) NOT NULL,
     PRIMARY KEY (Registreringsnummer),
-    FOREIGN KEY (FlyprodusentNavn) REFERENCES Flyprodusent (Navn), -- TODO fjern
     FOREIGN KEY (FlytypeNavn) REFERENCES Flytype (Navn),
     FOREIGN KEY (FlyselskapKode) REFERENCES Flyselskap (Flyselskapkode),
     UNIQUE (Serienummer, FlyselskapKode)
@@ -178,28 +174,39 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  BillettbestillingPris (
-    Referansenummer INT NOT NULL,
+  Delreise (
+    DelreiseId INT NOT NULL,
+    FlyruteId INT NOT NULL,
+    PlanlagtAvgangstid DATETIME NOT NULL,
+    PlanlagtAnkomsttid DATETIME NOT NULL,
+    Startflyplasskode VARCHAR(10) NOT NULL,
+    Endeflyplasskode VARCHAR(10) NOT NULL,
+    Bagasjeregistreringsnummer VARCHAR(50) NOT NULL,
+    PRIMARY KEY (FlyruteId, DelreiseId),
+    FOREIGN KEY (FlyruteId) REFERENCES Flyrute (FlyruteId),
+    FOREIGN KEY (Startflyplasskode) REFERENCES Flyplass (Flyplasskode),
+    FOREIGN KEY (Endeflyplasskode) REFERENCES Flyplass (Flyplasskode),
+    FOREIGN KEY (Bagasjeregistreringsnummer) REFERENCES Bagasje (Registreringsnummer)
+  );
+
+CREATE TABLE
+  DelreiseBillettpris (
+    FlyruteId INT NOT NULL,
+    DelreiseId INT NOT NULL,
     BillettprisId INT NOT NULL,
-    PRIMARY KEY (Referansenummer, BillettprisId),
-    FOREIGN KEY (Referansenummer) REFERENCES Billettbestilling (Referansenummer),
+    PRIMARY KEY (FlyruteId, DelreiseId, BillettprisId),
+    FOREIGN KEY (FlyruteId, DelreiseId) REFERENCES Delreise (FlyruteId, DelreiseId),
     FOREIGN KEY (BillettprisId) REFERENCES Billettpris (BillettprisId)
   );
 
 CREATE TABLE
-  Delreise (
-    DelreiseId INT NOT NULL,
-    FlyruteId INT NOT NULL,
-    PRIMARY KEY (DelreiseId),
-    FOREIGN KEY (FlyruteId) REFERENCES Flyrute (FlyruteId)
-  );
-
-CREATE TABLE
   DelreiseIBillettbestilling (
+    FlyruteId INT NOT NULL,
     DelreiseId INT NOT NULL,
     Referansenummer INT NOT NULL,
-    PRIMARY KEY (DelreiseId, Referansenummer),
-    FOREIGN KEY (DelreiseId) REFERENCES Delreise (DelreiseId),
+    Setenummer VARCHAR(10),
+    PRIMARY KEY (FlyruteId, DelreiseId, Referansenummer),
+    FOREIGN KEY (FlyruteId, DelreiseId) REFERENCES Delreise (FlyruteId, DelreiseId),
     FOREIGN KEY (Referansenummer) REFERENCES Billettbestilling (Referansenummer)
   );
 
@@ -214,9 +221,10 @@ CREATE TABLE
 CREATE TABLE
   Setereservasjon (
     Setenummer VARCHAR(10) NOT NULL,
+    FlyruteId INT NOT NULL,
     DelreiseId INT NOT NULL,
-    PRIMARY KEY (Setenummer, DelreiseId),
-    FOREIGN KEY (DelreiseId) REFERENCES Delreise (DelreiseId)
+    PRIMARY KEY (Setenummer, FlyruteId, DelreiseId),
+    FOREIGN KEY (FlyruteId, DelreiseId) REFERENCES Delreise (FlyruteId, DelreiseId)
   );
 
 CREATE TABLE
