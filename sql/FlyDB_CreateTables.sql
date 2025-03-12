@@ -10,6 +10,7 @@ CREATE TABLE
   Flyselskap (
     Flyselskapkode VARCHAR(10) NOT NULL,
     Navn VARCHAR(50),
+    Land VARCHAR(50),
     PRIMARY KEY (Flyselskapkode)
   );
 
