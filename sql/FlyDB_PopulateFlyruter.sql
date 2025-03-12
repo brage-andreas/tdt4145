@@ -2,6 +2,7 @@
 --
 INSERT INTO
   Flyrute (
+    FlyruteId,
     Flyrutenummer,
     Ukedagskode,
     PlanlagtAvgangstid,
@@ -12,6 +13,7 @@ INSERT INTO
   )
 VALUES
   (
+    1,
     1311,
     12345,
     '15:15',
@@ -21,6 +23,7 @@ VALUES
     'Dash-8 100'
   ),
   (
+    2,
     1302,
     12345,
     '07:35',
@@ -30,6 +33,7 @@ VALUES
     'Dash-8 100'
   ),
   (
+    3,
     753,
     1234567,
     '10:20',
@@ -39,6 +43,7 @@ VALUES
     'Boeing 737 800'
   ),
   (
+    4,
     332,
     1234567,
     '08:00',
@@ -48,11 +53,32 @@ VALUES
     'Airbus a320neo'
   ),
   (
+    4,
     888,
     12345,
     '10:00',
     '12:10',
     'TRD',
+    'SVG',
+    'Airbus a320neo'
+  ),
+  (
+    5,
+    888,
+    12345,
+    '10:00',
+    '11:10',
+    'TRD',
+    'BGO',
+    'Airbus a320neo'
+  ),
+  (
+    6,
+    888,
+    12345,
+    '11:40',
+    '12:10',
+    'BGO',
     'SVG',
     'Airbus a320neo'
   );
