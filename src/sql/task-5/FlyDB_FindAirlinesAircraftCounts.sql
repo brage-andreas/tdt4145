@@ -1,7 +1,3 @@
-/*
-Vi ønsker å ha en SQL-spørring (query) som finner flyselskap, hvilke flytyper
-flyselskapet bruker og antall fly selskapet har av hver flytype.
- */
 SELECT
   Flyselskap.Navn AS Flyselskap,
   Flytype.Navn AS Flytype,

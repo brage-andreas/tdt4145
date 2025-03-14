@@ -1,5 +1,3 @@
--- TODO: uferdig fil
---
 INSERT INTO
   Flyrute (
     FlyruteId,
