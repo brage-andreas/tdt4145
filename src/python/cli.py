@@ -95,12 +95,12 @@ def run_task_6(airport_code, day_of_week, is_departure, is_arrival):
         
         results = task_6.find_flight_routes_to_airport(day_of_week, airport_code, is_departure, is_arrival)
         
-        print(f"\nViser {"avganger" if is_departure else "ankomster"} for {airport_code} på {days[day_of_week].lower()}er.") 
+        print(f"\nViser {"avganger" if is_departure else "ankomster"} for {airport_code} på {days[day_of_week].lower()}er.\n") 
 
         if results:
-            print(f"{"Flyreise":<10}  {f"{"avgangs" if is_departure else "ankomst"}tid":<10}  {"Fra":<10}  {"Til":<10}")
+            print(f"{"Flyreise":<10}  {f"{"Avgangs" if is_departure else "Ankomst"}tid":<10}  {"Flyplasser":<30}")
             for row in results:
-                print(f"{row[0]:<10}  {row[1]:<10}  {row[2]:<10}  {row[3]:<10}")
+                print(f"{row[0]:<10}  {row[1]:<10}  {', '.join(row[2]):<30}")
         else:
             print("\nIngen resultater.")
     
