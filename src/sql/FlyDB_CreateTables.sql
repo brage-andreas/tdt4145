@@ -54,7 +54,7 @@ CREATE TABLE
   Flyrute (
     FlyruteId INT NOT NULL,
     Flyrutenummer INT NOT NULL,
-    Ukedagskode INT,
+    Ukedagskode VARCHAR(7),
     PlanlagtAvgangstid DATETIME,
     PlanlagtAnkomsttid DATETIME,
     StartFlyplass VARCHAR(10) NOT NULL,
