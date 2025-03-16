@@ -89,6 +89,54 @@ def select_flight_direction():
         except ValueError:
             print("Vennligst skriv inn et tall.")
 
+def select_flight_route():
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT FlyruteId, Flyrutenummer FROM Flyrute")
+        routes = cursor.fetchall()
+        conn.close()
+        
+        print("Available flight routes:")
+        for i, (route_id, route_number) in enumerate(routes, 1):
+            print(f"{i}. {route_number} (ID: {route_id})")
+        
+        while True:
+            try:
+                choice = int(input(f"\nVelg flyrute (1-{len(routes)}): "))
+                if 1 <= choice <= len(routes):
+                    return routes[choice-1][0]
+                else:
+                    print("Ugyldig valg. Prøv igjen.")
+            except ValueError:
+                print("Vennligst skriv inn et tall.")
+    except Exception as e:
+        print(f"Klarte ikke tilkoble databasen: {e}")
+
+def select_flight_sequence():
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT DelreiseId, DelreiseNummer FROM Delreise")
+        sequences = cursor.fetchall()
+        conn.close()
+        
+        print("Tilgjengelige delflyreiser:")
+        for i, (sequence_id, sequence_number) in enumerate(sequences, 1):
+            print(f"{i}. {sequence_number} (ID: {sequence_id})")
+        
+        while True:
+            try:
+                choice = int(input(f"\nVelg delreise (1-{len(sequences)}): "))
+                if 1 <= choice <= len(sequences):
+                    return sequences[choice-1][0]
+                else:
+                    print("Ugyldig valg. Prøv igjen.")
+            except ValueError:
+                print("Vennligst skriv inn et tall.")
+    except Exception as e:
+        print(f"Klarte ikke tilkoble databasen: {e}")
+
 def run_task_6(airport_code, day_of_week, is_departure, is_arrival):
     try:
         import task_6
@@ -112,13 +160,12 @@ def run_task_8(flight_route_id, flight_sequence_number):
     try:
         import task_8
         
-        # dict<number, list<str>>
         results = task_8.find_avaiable_seats(flight_route_id, flight_sequence_number)
 
         if results:
-            print(f"\nViser ledige seter for flyreise {flight_route_id}-{flight_sequence_number}.\n")
-            for row_number, seats in results.items():
-                print(f"Rad {row_number}: {', '.join(seats)}")
+            print(f"\nViser ledige seter for flyreise {flight_route_id}.\n")
+            for flight_sequence, seats in results.items():
+                print(f"Delreise {flight_sequence}: {', '.join(seats)}")
         else:
             print("\nIngen resultater.")
         
@@ -157,8 +204,8 @@ def main_menu():
             elif choice == 2:
                 display_header()
 
-                flight_route_id = 2
-                flight_sequence_number = 2
+                flight_route_id = select_flight_route()
+                flight_sequence_number = select_flight_sequence()
 
                 run_task_8(flight_route_id, flight_sequence_number)
 
