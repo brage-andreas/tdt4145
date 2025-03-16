@@ -84,7 +84,6 @@ def find_avaiable_seats(flight_route_id, flight_sequence_number):
         if flight_segment not in available_seats:
             available_seats[flight_segment] = all_seats.copy()
         
-        print(f"Removing {seat_number} from {flight_segment}: {available_seats[flight_segment]}")
         available_seats[flight_segment].remove(seat_number)
         
     conn.close()
