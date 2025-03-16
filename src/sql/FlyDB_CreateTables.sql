@@ -133,9 +133,9 @@ CREATE TABLE
     Referansenummer INT NOT NULL,
     TidKjøpt DATETIME,
     Kundenummer INT NOT NULL,
+    Type VARCHAR(20),
     PRIMARY KEY (Referansenummer),
-    FOREIGN KEY (Kundenummer) REFERENCES Kunde (Kundenummer)
-    -- TODO: Mangler foreign key til billettpris 💀
+    FOREIGN KEY (Kundenummer) REFERENCES Kunde (Kundenummer) FOREIGN KEY
   );
 
 -- Superklasse --
