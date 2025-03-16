@@ -108,11 +108,29 @@ def run_task_6(airport_code, day_of_week, is_departure, is_arrival):
         print(f"Error: {e}")
         print("task_6.py kan være feilkonfigurert.")
 
+def run_task_8(flight_route_id, flight_sequence_number):
+    try:
+        import task_8
+        
+        # dict<number, list<str>>
+        results = task_8.find_avaiable_seats(flight_route_id, flight_sequence_number)
+
+        if results:
+            print(f"\nViser ledige seter for flyreise {flight_route_id}-{flight_sequence_number}.\n")
+            for row_number, seats in results.items():
+                print(f"Rad {row_number}: {', '.join(seats)}")
+        else:
+            print("\nIngen resultater.")
+        
+    except Exception as e:
+        print(f"Error: {e}")
+        print("task_8.py kan være feilkonfigurert.")
+
 def main_menu():
     while True:
         display_header()
         print("1. Finn flyreiser")
-        print("2. -")
+        print("2. Finn ledige seter")
         print("3. -")
         print("4. -")
         print("5. -")
@@ -126,12 +144,24 @@ def main_menu():
             
             if choice == 1:
                 display_header()
+
                 airport_code = select_airport()
                 day_of_week = select_day_of_week()
                 is_departure, is_arrival = select_flight_direction()
                 
                 run_task_6(airport_code, day_of_week, is_departure, is_arrival)
                 
+                input("\nTrykk Enter for å fortsette.")
+                clear_screen()
+
+            elif choice == 2:
+                display_header()
+
+                flight_route_id = 2
+                flight_sequence_number = 2
+
+                run_task_8(flight_route_id, flight_sequence_number)
+
                 input("\nTrykk Enter for å fortsette.")
                 clear_screen()
 
@@ -171,7 +201,7 @@ def main_menu():
             input("Trykk Enter for å fortsette.")
             clear_screen()
 
-if __name__ == "__main__":
+def run():
     clear_screen()
     print("Sjekker om databasen eksisterer...")
 
@@ -186,3 +216,6 @@ if __name__ == "__main__":
     
     print("\n")
     main_menu()
+
+if __name__ == "__main__":
+    run()

@@ -8,5 +8,5 @@ sys.path.append(python_dir)
 os.chdir(python_dir)
 
 if __name__ == "__main__":
-    from python.cli import main_menu
-    main_menu()
+    from python.cli import run
+    run()

@@ -60,13 +60,17 @@ def populate():
         "src/sql/task-1/FlyDB_PopulateFlyplass.sql",
 
         "src/sql/task-2/FlyDB_PopulateFlyselskap.sql", 
-        "src/sql/task-2/FlyDB_PopulateFlyprodusent.sql",
         "src/sql/task-2/FlyDB_PopulateFlytype.sql",
         "src/sql/task-2/FlyDB_PopulateFly.sql",
 
         "src/sql/task-3/FlyDB_PopulateFlyrute.sql",
-        "src/sql/task-3/FlyDB_PopulateBagasje.sql",
-        "src/sql/task-3/FlyDB_PopulateDelreise.sql"
+        "src/sql/task-3/FlyDB_PopulateDelreise.sql",
+
+        "src/sql/task-4/FlyDB_PopulateFlyvning.sql",
+
+        "src/sql/task-5/FlyDB_FindAirlinesAircraftCounts.sql",
+
+        "src/sql/task-7/FlyDB_PopulateBestillinger.sql",
     ]
 
     print("Fyller databasen med data...")

@@ -94,6 +94,8 @@ CREATE TABLE
     StatusId INT NOT NULL,
     FaktiskAvgangstid DATETIME,
     FaktiskAnkomsttid DATETIME,
+    Avgangsdato DATETIME,
+    Ankomstdato DATETIME,
     Flyregistreringsnummer VARCHAR(50) NOT NULL,
     PRIMARY KEY (FlyruteId, Løpenummer),
     FOREIGN KEY (FlyruteId) REFERENCES Flyrute (FlyruteId),
@@ -135,7 +137,7 @@ CREATE TABLE
     Kundenummer INT NOT NULL,
     Type VARCHAR(20),
     PRIMARY KEY (Referansenummer),
-    FOREIGN KEY (Kundenummer) REFERENCES Kunde (Kundenummer) FOREIGN KEY
+    FOREIGN KEY (Kundenummer) REFERENCES Kunde (Kundenummer)
   );
 
 -- Superklasse --
@@ -182,7 +184,7 @@ CREATE TABLE
     PlanlagtAnkomsttid DATETIME NOT NULL,
     Startflyplasskode VARCHAR(10) NOT NULL,
     Endeflyplasskode VARCHAR(10) NOT NULL,
-    Bagasjeregistreringsnummer VARCHAR(50) NOT NULL,
+    Bagasjeregistreringsnummer INT,
     PRIMARY KEY (FlyruteId, DelreiseId),
     FOREIGN KEY (FlyruteId) REFERENCES Flyrute (FlyruteId),
     FOREIGN KEY (Startflyplasskode) REFERENCES Flyplass (Flyplasskode),
@@ -236,4 +238,14 @@ CREATE TABLE
     PRIMARY KEY (FlyruteId, Løpenummer, BillettReferanseNummer),
     FOREIGN KEY (FlyruteId, Løpenummer) REFERENCES Flyvning (FlyruteId, Løpenummer),
     FOREIGN KEY (BillettReferanseNummer) REFERENCES Billettbestilling (Referansenummer)
+  );
+
+CREATE TABLE
+  SjekketInnPåDelreise (
+    FlyruteId INT NOT NULL,
+    DelreiseId INT NOT NULL,
+    Registreringsnummer INT NOT NULL,
+    PRIMARY KEY (FlyruteId, DelreiseId, Registreringsnummer),
+    FOREIGN KEY (FlyruteId, DelreiseId) REFERENCES Delreise (FlyruteId, DelreiseId),
+    FOREIGN KEY (Registreringsnummer) REFERENCES Bagasje (Registreringsnummer)
   );
