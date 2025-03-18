@@ -148,8 +148,7 @@ def run_task_8(flight_route_id):
         for i, [start_airport_code, end_airport_code, seats] in enumerate(results, 1):
             print(f"{i}.  {start_airport_code} → {end_airport_code}: {', '.join(seats)}")
         
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
         print("task_8.py kan være feilkonfigurert.")
 
 def main_menu():
