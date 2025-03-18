@@ -153,6 +153,7 @@ def get_sequence_by_route_id(cursor, flight_route_id):
 
 get_all_flight_routes_query = """
     SELECT
+      fr.FlyruteId,
       fr.Flyrutenummer,
       ftea.FlyselskapsKode,
       fr.StartFlyplass,
@@ -164,7 +165,7 @@ get_all_flight_routes_query = """
 """
 def get_all_flight_routes(cursor):
     """
-    Returns: List<(route_number, company_code, start_airport_code, end_airport_code)>
+    Returns: List<(route_id, route_number, company_code, start_airport_code, end_airport_code)>
     """
 
     cursor.execute(get_all_flight_routes_query)
@@ -172,22 +173,22 @@ def get_all_flight_routes(cursor):
     response = cursor.fetchall()
     result = []
 
-    for route_number, company_code, start_airport, end_airport in response:
+    for (route_id, route_number, company_code, start_airport, end_airport) in response:
         for entry in result:
-            if entry[0] == route_number and entry[1] == company_code:
-                entry[2].append((start_airport, end_airport))
+            if entry[1] == route_number and entry[2] == company_code:
+                entry[3].append((start_airport, end_airport))
                 break
         else:
-            result.append((route_number, company_code, [(start_airport, end_airport)]))
+            result.append((route_id, route_number, company_code, [(start_airport, end_airport)]))
 
     # Finner "hovedflyrute"
-    for i, (_, _, airports) in enumerate(result):
+    for i, (_, _, _, airports) in enumerate(result):
         start_airport = [airport[0] for airport in airports]
         end_airport = [airport[1] for airport in airports]
 
         start_airport = [airport for airport in start_airport if airport not in end_airport]
         end_airport = [airport for airport in end_airport if airport not in start_airport]
 
-        result[i] = (result[i][0], result[i][1], start_airport[0], end_airport[0])
+        result[i] = (result[i][0], result[i][1], result[i][2], start_airport[0], end_airport[0])
     
     return result

@@ -53,4 +53,4 @@ def get_available_seats(flight_route_id):
 
     conn.close()
     
-    return 
+    return available_seats

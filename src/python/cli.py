@@ -98,7 +98,7 @@ def select_flight_route():
     conn.close()
     
     print("Tilgjengelige flyruter:")
-    for i, (route_number, company_code, start_airport, end_airport) in enumerate(routes, 1):
+    for i, (route_id, route_number, company_code, start_airport, end_airport) in enumerate(routes, 1):
         print(f"{i}. {f"{company_code}{route_number}":<8} {start_airport} → {end_airport}")
     
     while True:
@@ -159,8 +159,7 @@ def run_task_6(airport_code, day_of_week, is_departure, is_arrival):
         else:
             print("\nIngen resultater.")
     
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
         print("task_6.py kan være feilkonfigurert.")
 
 def run_task_8(flight_route_id):
@@ -246,7 +245,8 @@ def main_menu():
                 print("Ugyldig valg. Prøv igjen.")
                 input("Trykk Enter for å fortsette.")
         
-        except ValueError:
+        except ValueError as e:
+            print(e)
             print("Vennligst skriv inn et tall.")
             input("Trykk Enter for å fortsette.")
 
