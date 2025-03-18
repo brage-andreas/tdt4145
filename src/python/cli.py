@@ -93,13 +93,13 @@ def select_flight_route():
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    routes = queries.get_flight_routes(cursor)
+    routes = queries.get_all_flight_routes(cursor)
 
     conn.close()
     
     print("Tilgjengelige flyruter:")
-    for i, (route_id, route_number) in enumerate(routes, 1):
-        print(f"{i}. {route_number} (ID: {route_id})")
+    for i, (route_number, company_code, start_airport, end_airport) in enumerate(routes, 1):
+        print(f"{i}. {f"{company_code}{route_number}":<8} {start_airport} → {end_airport}")
     
     while True:
         try:
