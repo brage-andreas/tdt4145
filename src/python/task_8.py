@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import queries
 
 """
 Det skal lages et Pytonprogram (med bruk av SQL) som lar brukeren velge en flyvning
@@ -28,64 +29,28 @@ def get_all_seats_from_configuration(configuration):
     
     return result
 
-seat_configuration_query = """
-    SELECT
-      sk.SeteKonfig
-    FROM
-      Setekonfigurasjon sk
-      INNER JOIN Flytype ft ON sk.Id = ft.SetekonfigurasjonId
-      INNER JOIN Flyrute fr ON ft.Navn = fr.Flytype
-    WHERE
-      fr.FlyruteId = :routeId
-"""
-
-taken_seats_query = """
-    SELECT
-      dib.Setenummer,
-      dib.DelreiseId
-    FROM
-      DelreiseIBillettbestilling dib
-    WHERE
-      dib.FlyruteId = :routeId
-      AND dib.Setenummer IS NOT NULL
-"""
-
-def find_avaiable_seats(flight_route_id, flight_sequence_number):
+def get_available_seats(flight_route_id):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    cursor.execute(
-        seat_configuration_query,
-        {
-            "routeId": flight_route_id
-        }
-    )
+    sequences = queries.get_sequence_by_route_id(cursor, flight_route_id)
 
-    seat_configuration_result = cursor.fetchone()
-    
-    if not seat_configuration_result:
-        conn.close()
-        return
-        
-    
-    all_seats = get_all_seats_from_configuration(seat_configuration_result[0])
-    
-    cursor.execute(
-        taken_seats_query,
-        {
-            "routeId": flight_route_id
-        }
-    )
+    available_seats = []
 
-    taken_seats_result = cursor.fetchall()
+    for (sequence_id, start_airport, end_airport) in sequences:
+        seat_configuration = queries.get_seat_configuration(cursor, flight_route_id)        
+        taken_seats = queries.get_taken_seats(cursor, flight_route_id, sequence_id)
+        all_seats = get_all_seats_from_configuration(seat_configuration)
 
-    available_seats = {}
-    for seat_number, flight_segment in taken_seats_result:
-        if flight_segment not in available_seats:
-            available_seats[flight_segment] = all_seats.copy()
-        
-        available_seats[flight_segment].remove(seat_number)
-        
+        available_seats.append(
+            [
+                sequence_id,
+                start_airport,
+                end_airport,
+                [seat for seat in all_seats if seat not in taken_seats]
+            ]
+        )
+
     conn.close()
     
-    return available_seats
+    return 
