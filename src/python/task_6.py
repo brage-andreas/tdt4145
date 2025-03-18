@@ -30,12 +30,12 @@ def get_flight_routes_to_airport_with_connected_airports(weekdayCode, airportCod
         isArrival
     )
     
-    for route_number, time in intermediate_result:
+    for route_number, company_code, time in intermediate_result:
         connected_airports = queries.get_connected_airports_by_route_number(cursor, route_number)
 
         airports = [airport[0] for airport in connected_airports]
 
-        result.append((route_number, time, airports))
+        result.append((f"{company_code}{route_number}", time, airports))
     
     conn.close()
   

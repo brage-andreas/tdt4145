@@ -1,12 +1,15 @@
 flight_routes_query = f"""
     SELECT
       fr.Flyrutenummer,
+      ftea.FlyselskapsKode,
       CASE
         WHEN :isDeparture = 1 THEN fr.PlanlagtAvgangstid
         WHEN :isArrival = 1 THEN fr.PlanlagtAnkomsttid
       END AS Tid
     FROM
       Flyrute fr
+      LEFT JOIN Flytype ft ON fr.Flytype = ft.Navn
+      LEFT JOIN FlytypeEidAv ftea ON ftea.FlytypeNavn = ft.Navn
     WHERE
       fr.Ukedagskode LIKE :weekday
       AND (

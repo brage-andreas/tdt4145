@@ -49,3 +49,10 @@ VALUES
     3,
     'De Havilland Canada'
   );
+
+INSERT INTO
+  FlytypeEidAv (FlyselskapsKode, FlytypeNavn)
+VALUES
+  ('DY', 'Boeing 737 800'),
+  ('SK', 'Airbus a320neo'),
+  ('WF', 'Dash-8 100');
