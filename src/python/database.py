@@ -115,7 +115,26 @@ def check_data():
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         
-        tables = ["Flyplass", "Flyselskap", "Flytype", "Fly", "Flyrute"]
+        tables = [
+            "Flyplass",
+            "Fly",
+            "Flyselskap",
+            "Setekonfigurasjon",
+            "Flytype",
+            "FlytypeEidAv",
+            "Delreise",
+            "DelreiseBillettpris",
+            "Billettpris",
+            "Økonomi",
+            "Budsjett",
+            "Premium",
+            "Flyrute",
+            "FlyvningStatus",
+            "Flyvning",
+            "Kunde",
+            "Billettbestilling",
+            "DelreiseIBillettbestilling",
+        ]
         
         has_data = True
         for table in tables:
@@ -123,7 +142,7 @@ def check_data():
             count = cursor.fetchone()[0]
             if count == 0:
                 has_data = False
-                print(f"Tabell {table} er tom.")
+                print(f"  - Tabellen \"{table}\" er tom.")
                 
         conn.close()
         return has_data
