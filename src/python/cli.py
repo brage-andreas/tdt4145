@@ -111,34 +111,6 @@ def select_flight_route():
         except ValueError:
             print("Vennligst skriv inn et tall.")
 
-def select_flight_sequence(flight_route_id):
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    sequences = queries.get_sequence_by_route_id(cursor, flight_route_id)
-
-    conn.close()
-
-    if not sequences:
-        print(f"\nIngen tilgjengelige delflyreiser for flyrute {flight_route_id}.")
-        return
-
-    print(f"\nTilgjengelige delflyreiser for flyrute {flight_route_id}:\n")
-
-    print(f"   {"Delreise":<10}  Startflyplass  Endeflyplass")
-    for i, (sequence_id, start_airport_code, end_airport_code) in enumerate(sequences, 1):
-        print(f"{i}. {f"Delreise {sequence_id}":<10}  {start_airport_code:<13}  {end_airport_code:<13}")
-    
-    while True:
-        try:
-            choice = int(input(f"\nVelg delreise (1-{len(sequences)}): "))
-            if 1 <= choice <= len(sequences):
-                return sequences[choice-1][0]
-            else:
-                print("Ugyldig valg. Prøv igjen.")
-        except ValueError:
-            print("Vennligst skriv inn et tall.")
-
 def run_task_6(airport_code, day_of_week, is_departure, is_arrival):
     try:
         import task_6
@@ -166,15 +138,15 @@ def run_task_8(flight_route_id):
     try:
         import task_8
         
-        results = task_8.get_available_seats(flight_route_id)
+        route_number_string, results = task_8.get_available_seats(flight_route_id)
 
         if not results:
             print("\nIngen resultater.")
             return
 
-        print(f"\nViser ledige seter for flyreise {flight_route_id}.\n")
-        for [sequence_id, start_airport_code, end_airport_code, seats] in results:
-            print(f"Delreise {sequence_id} ({start_airport_code} → {end_airport_code}): {', '.join(seats)}")
+        print(f"\nViser ledige seter for flyreise {route_number_string}.\n")
+        for i, [start_airport_code, end_airport_code, seats] in enumerate(results, 1):
+            print(f"{i}.  {start_airport_code} → {end_airport_code}: {', '.join(seats)}")
         
     except Exception as e:
         print(f"Error: {e}")
