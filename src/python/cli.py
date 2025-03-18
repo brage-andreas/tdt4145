@@ -37,9 +37,8 @@ def get_airports():
 
 def display_header():
     print("-"*50)
-    print("FlyDB supermegaprogram v2.3.9".center(50))
+    print("FlyDB superprogram".center(50))
     print("-"*50)
-    print()
 
 def select_airport():
     airports = get_airports()
@@ -116,7 +115,6 @@ def select_flight_sequence(flight_route_id):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    # sequence_number, start_airport_code, end_airport_code
     sequences = queries.get_sequence_by_route_id(cursor, flight_route_id)
 
     conn.close()
@@ -128,8 +126,7 @@ def select_flight_sequence(flight_route_id):
     print(f"\nTilgjengelige delflyreiser for flyrute {flight_route_id}:\n")
 
     print(f"   {"Delreise":<10}  Startflyplass  Endeflyplass")
-    for i, sequence in enumerate(sequences, 1):
-        sequence_id, start_airport_code, end_airport_code = sequence
+    for i, (sequence_id, start_airport_code, end_airport_code) in enumerate(sequences, 1):
         print(f"{i}. {f"Delreise {sequence_id}":<10}  {start_airport_code:<13}  {end_airport_code:<13}")
     
     while True:
@@ -186,6 +183,7 @@ def run_task_8(flight_route_id):
 
 def main_menu():
     while True:
+        clear_screen()
         display_header()
         print("1. Finn flyreiser")
         print("2. Finn ledige seter")
@@ -210,7 +208,6 @@ def main_menu():
                 run_task_6(airport_code, day_of_week, is_departure, is_arrival)
                 
                 input("\nTrykk Enter for å fortsette.")
-                clear_screen()
 
             elif choice == 2:
                 display_header()
@@ -220,7 +217,6 @@ def main_menu():
                 run_task_8(flight_route_id)
 
                 input("\nTrykk Enter for å fortsette.")
-                clear_screen()
 
             elif choice == 7:
                 display_header()
@@ -231,7 +227,6 @@ def main_menu():
                 else:
                     print("Avbrutt.")
                 input("Trykk Enter for å fortsette.")
-                clear_screen()
 
             elif choice == 8:
                 display_header()
@@ -242,7 +237,6 @@ def main_menu():
                 else:
                     print("Avbrutt.")
                 input("Trykk Enter for å fortsette.")
-                clear_screen()
 
             elif choice == 9:
                 print("\nHa en fin dag!")
@@ -251,15 +245,12 @@ def main_menu():
             else:
                 print("Ugyldig valg. Prøv igjen.")
                 input("Trykk Enter for å fortsette.")
-                clear_screen()
         
         except ValueError:
             print("Vennligst skriv inn et tall.")
             input("Trykk Enter for å fortsette.")
-            clear_screen()
 
 def run():
-    clear_screen()
     print("Sjekker om databasen eksisterer...")
 
     if not database.exists():
@@ -271,7 +262,18 @@ def run():
     else:
         print("Databasen finnes.")
     
-    print("\n")
+    print("Sjekker om databasen er tom...")
+    if not database.check_data():
+        confirm = input("Vil du fylle databasen nå? (j/n): ")
+        if confirm.lower() == "j":
+            database.populate()
+            database.check_data()
+        else:
+            print("Avbrutt. Databasen er ikke fylt")
+        input("Trykk Enter for å fortsette.")
+    else:
+        print("Databasen er ikke tom.")
+
     main_menu()
 
 if __name__ == "__main__":
