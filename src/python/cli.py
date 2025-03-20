@@ -43,7 +43,7 @@ def display_header():
 def select_airport():
     airports = get_airports()
     
-    print("Available airports:")
+    print("\nMulige flyplasser:")
     for i, (code, name) in enumerate(airports, 1):
         print(f"{i}. {code} - {name}")
     
@@ -97,7 +97,7 @@ def select_flight_route():
 
     conn.close()
     
-    print("Tilgjengelige flyruter:")
+    print("\nTilgjengelige flyruter:")
     for i, (route_id, route_number, company_code, start_airport, end_airport) in enumerate(routes, 1):
         print(f"{i}. {f"{company_code}{route_number}":<8} {start_airport} → {end_airport}")
     
@@ -166,11 +166,9 @@ def main_menu():
         print("9. Avslutt")
         
         try:
-            choice = int(input("\nVelg: "))
+            choice = int(input("\nVelg (1-9): "))
             
             if choice == 1:
-                display_header()
-
                 airport_code = select_airport()
                 day_of_week = select_day_of_week()
                 is_departure, is_arrival = select_flight_direction()
@@ -180,8 +178,6 @@ def main_menu():
                 input("\nTrykk Enter for å fortsette.")
 
             elif choice == 2:
-                display_header()
-
                 flight_route_id = select_flight_route()
 
                 run_task_8(flight_route_id)
@@ -189,7 +185,6 @@ def main_menu():
                 input("\nTrykk Enter for å fortsette.")
 
             elif choice == 7:
-                display_header()
                 confirm = input("Er du sikker på at du vil slette og opprette en ny database? (j/n): ")
                 if confirm.lower() == "j":
                     database.destroy()
@@ -199,7 +194,6 @@ def main_menu():
                 input("Trykk Enter for å fortsette.")
 
             elif choice == 8:
-                display_header()
                 confirm = input("Er du sikker på at du vil fylle databasen? (j/n): ")
                 if confirm.lower() == "j":
                     database.populate()
