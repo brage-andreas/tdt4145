@@ -68,8 +68,6 @@ def populate():
 
         "src/sql/task-4/FlyDB_PopulateFlyvning.sql",
 
-        "src/sql/task-5/FlyDB_FindAirlinesAircraftCounts.sql",
-
         "src/sql/task-7/FlyDB_PopulateBestillinger.sql",
     ]
 
@@ -97,10 +95,13 @@ def populate():
                     conn.commit()
                     print("OK")
                 except sqlite3.Error as e:
-                    print(f"Feil:\n{" "*6}{e.args[0].replace("\n", f"\n{" "*6}")}")
+                    indent = " " * 6
+                    error = e.args[0].replace('\n', f'\n{indent}')
+                    print(f"Feil:\n{indent}{error}")
                     
             except Exception as e:
-                print(f"Kunne ikke lese fil:\n{" "*6}{e.args[0].replace("\n", f"\n{" "*6}")}")
+                indent = {" "*6}
+                print(f"Kunne ikke lese fil:\n{indent}{e.args[0].replace('\n', f'\n{indent}')}")
         
         conn.close()
         print("Database fylt.")

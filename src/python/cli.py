@@ -99,17 +99,35 @@ def select_flight_route():
     
     print("\nTilgjengelige flyruter:")
     for i, (route_id, route_number, company_code, start_airport, end_airport) in enumerate(routes, 1):
-        print(f"{i}. {f"{company_code}{route_number}":<8} {start_airport} → {end_airport}")
+        print(f"{i}. {f'{company_code}{route_number}':<8} {start_airport} → {end_airport}")
     
     while True:
         try:
             choice = int(input(f"\nVelg flyrute (1-{len(routes)}): "))
             if 1 <= choice <= len(routes):
-                return routes[choice-1][0]
+                return (routes[choice-1][0], routes[choice-1][1])
             else:
                 print("Ugyldig valg. Prøv igjen.")
         except ValueError:
             print("Vennligst skriv inn et tall.")
+
+def run_task_5():
+    task_5_file = "src/sql/task-5/FlyDB_FindAirlinesAircraftCounts.sql"
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        with open(path_to(task_5_file), 'r', encoding='utf-8') as f:
+            sql_script = f.read()
+        cursor.execute(sql_script)
+        results = cursor.fetchall()
+        conn.close()
+        
+        print("\nViser flyselskaper og antall fly:\n")
+        print(f"{'Flyselskap':<15}  {'Flytype':<20}  {'Antall fly':<10}")
+        for row in results:
+            print(f"{row[0]:<15}  {row[1]:<20}  {row[2]:<10}")
+    except Exception as e:
+        print("FlyDB_FindAirlinesAircraftCounts kan være feilkonfigurert.")
 
 def run_task_6(airport_code, day_of_week, is_departure, is_arrival):
     try:
@@ -134,11 +152,11 @@ def run_task_6(airport_code, day_of_week, is_departure, is_arrival):
     except Exception:
         print("task_6.py kan være feilkonfigurert.")
 
-def run_task_8(flight_route_id):
+def run_task_8(flight_route_id, flight_route_number):
     try:
         import task_8
         
-        route_number_string, results = task_8.get_available_seats(flight_route_id)
+        route_number_string, results = task_8.get_available_seats(flight_route_id, flight_route_number)
 
         if not results:
             print("\nIngen resultater.")
@@ -155,20 +173,25 @@ def main_menu():
     while True:
         clear_screen()
         display_header()
-        print("1. Finn flyreiser")
-        print("2. Finn ledige seter")
-        print("3. -")
+        print("1. Finn flyselskaper og antall fly  (opg. 5)")
+        print("2. Finn flyreiser  (opg. 6)")
+        print("3. Finn ledige seter  (opg. 8)")
         print("4. -")
         print("5. -")
         print("6. -")
         print("7. Slett og opprett tom database")
-        print("8. Fyll databasen")
+        print("8. Fyll databasen  (opg. 1, 2, 3, 4, 7)")
         print("9. Avslutt")
         
         try:
             choice = int(input("\nVelg (1-9): "))
             
             if choice == 1:
+                run_task_5()
+
+                input("\nTrykk Enter for å fortsette.")
+
+            elif choice == 2:
                 airport_code = select_airport()
                 day_of_week = select_day_of_week()
                 is_departure, is_arrival = select_flight_direction()
@@ -177,10 +200,10 @@ def main_menu():
                 
                 input("\nTrykk Enter for å fortsette.")
 
-            elif choice == 2:
-                flight_route_id = select_flight_route()
+            elif choice == 3:
+                flight_route_id, flight_route_number = select_flight_route()
 
-                run_task_8(flight_route_id)
+                run_task_8(flight_route_id, flight_route_number)
 
                 input("\nTrykk Enter for å fortsette.")
 
