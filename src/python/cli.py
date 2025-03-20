@@ -93,19 +93,19 @@ def select_flight_route():
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    routes = queries.get_all_flight_routes(cursor)
+    routes = queries.get_all_flights(cursor)
 
     conn.close()
     
-    print("\nTilgjengelige flyruter:")
-    for i, (route_id, route_number, company_code, start_airport, end_airport) in enumerate(routes, 1):
-        print(f"{i}. {f'{company_code}{route_number}':<8} {start_airport} → {end_airport}")
+    print("\nTilgjengelige flyvninger:")
+    for i, (route_id, route_number, company_code, start_airport, end_airport, departure_time, arrival_time) in enumerate(routes, 1):
+        print(f"{i}. {departure_time} til {arrival_time}   {f'{company_code}{route_number}':<8} {start_airport} → {end_airport}")
     
     while True:
         try:
-            choice = int(input(f"\nVelg flyrute (1-{len(routes)}): "))
+            choice = int(input(f"\nVelg flyvning (1-{len(routes)}): "))
             if 1 <= choice <= len(routes):
-                return (routes[choice-1][0], routes[choice-1][1])
+                return routes[choice-1][0]
             else:
                 print("Ugyldig valg. Prøv igjen.")
         except ValueError:
@@ -152,11 +152,11 @@ def run_task_6(airport_code, day_of_week, is_departure, is_arrival):
     except Exception:
         print("task_6.py kan være feilkonfigurert.")
 
-def run_task_8(flight_route_id, flight_route_number):
+def run_task_8(flight_route_id):
     try:
         import task_8
         
-        route_number_string, results = task_8.get_available_seats(flight_route_id, flight_route_number)
+        route_number_string, results = task_8.get_available_seats(flight_route_id)
 
         if not results:
             print("\nIngen resultater.")
@@ -201,9 +201,9 @@ def main_menu():
                 input("\nTrykk Enter for å fortsette.")
 
             elif choice == 3:
-                flight_route_id, flight_route_number = select_flight_route()
+                flight_route_id = select_flight_route()
 
-                run_task_8(flight_route_id, flight_route_number)
+                run_task_8(flight_route_id)
 
                 input("\nTrykk Enter for å fortsette.")
 

@@ -127,7 +127,7 @@ def get_taken_seats(cursor, flight_route_id, sequence_number):
 
     return [res[0] for res in cursor.fetchall()]
 
-get_sequence_by_route_number_query = """
+get_sequence_by_route_id_query = """
     SELECT
       dr.DelreiseId,
       dr.Startflyplasskode,
@@ -140,17 +140,17 @@ get_sequence_by_route_number_query = """
       LEFT JOIN Flytype ft ON fr.Flytype = ft.Navn
       LEFT JOIN FlytypeEidAv ftea ON ftea.FlytypeNavn = ft.Navn
     WHERE
-      fr.Flyrutenummer = :routeNumber
+      fr.FlyruteId = :routeId
 """
-def get_sequence_by_route_number(cursor, flight_route_number):
+def get_sequence_by_route_id(cursor, flight_route_id):
     """
     Returns: List<sequence_number, start_airport_code, end_airport_code, company_code, route_number>
     """
 
     cursor.execute(
-        get_sequence_by_route_number_query,
+        get_sequence_by_route_id_query,
         {
-            "routeNumber": flight_route_number
+            "routeId": flight_route_id
         }
     )
 
@@ -162,15 +162,21 @@ get_all_flight_routes_query = """
       fr.Flyrutenummer,
       ftea.FlyselskapsKode,
       fr.StartFlyplass,
-      fr.SluttFlyplass
+      fr.SluttFlyplass,
+      f.Avgangsdato,
+      f.Ankomstdato
     FROM
-      Flyrute fr
+      Flyvning f
+      LEFT JOIN Flyrute fr ON f.FlyruteId = fr.FlyruteId
       LEFT JOIN Flytype ft ON fr.Flytype = ft.Navn
       LEFT JOIN FlytypeEidAv ftea ON ftea.FlytypeNavn = ft.Navn
+      LEFT JOIN FlyvningStatus fs ON f.StatusId = fs.StatusId
+    WHERE
+      fs.Status = 'PLANNED'
 """
-def get_all_flight_routes(cursor):
+def get_all_flights(cursor):
     """
-    Returns: List<(route_id, route_number, company_code, start_airport_code, end_airport_code)>
+    Returns: List<(route_id, route_number, company_code, start_airport_code, end_airport_code, departure_date, arrival_date)>
     """
 
     cursor.execute(get_all_flight_routes_query)
@@ -178,22 +184,22 @@ def get_all_flight_routes(cursor):
     response = cursor.fetchall()
     result = []
 
-    for (route_id, route_number, company_code, start_airport, end_airport) in response:
+    for (route_id, route_number, company_code, start_airport, end_airport, departure_date, arrival_date) in response:
         for entry in result:
             if entry[1] == route_number and entry[2] == company_code:
                 entry[3].append((start_airport, end_airport))
                 break
         else:
-            result.append((route_id, route_number, company_code, [(start_airport, end_airport)]))
+            result.append((route_id, route_number, company_code, [(start_airport, end_airport)], departure_date, arrival_date))
 
     # Finner "hovedflyrute"
-    for i, (_, _, _, airports) in enumerate(result):
+    for i, (_, _, _, airports, _, _) in enumerate(result):
         start_airport = [airport[0] for airport in airports]
         end_airport = [airport[1] for airport in airports]
 
         start_airport = [airport for airport in start_airport if airport not in end_airport]
         end_airport = [airport for airport in end_airport if airport not in start_airport]
 
-        result[i] = (result[i][0], result[i][1], result[i][2], start_airport[0], end_airport[0])
+        result[i] = (result[i][0], result[i][1], result[i][2], start_airport[0], end_airport[0], result[i][4], result[i][5])
     
     return result

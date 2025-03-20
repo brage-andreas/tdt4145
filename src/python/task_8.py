@@ -29,11 +29,11 @@ def get_all_seats_from_configuration(configuration):
     
     return result
 
-def get_available_seats(flight_route_id, flight_route_number):
+def get_available_seats(flight_route_id):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    sequences = queries.get_sequence_by_route_number(cursor, flight_route_number)
+    sequences = queries.get_sequence_by_route_id(cursor, flight_route_id)
 
     route_number_string = None
     available_seats = []
