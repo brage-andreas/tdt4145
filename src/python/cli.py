@@ -156,13 +156,13 @@ def run_task_8(flight_route_id):
     try:
         import task_8
         
-        route_number_string, results = task_8.get_available_seats(flight_route_id)
+        results = task_8.get_available_seats(flight_route_id)
 
         if not results:
             print("\nIngen resultater.")
             return
 
-        print(f"\nViser ledige seter for flyreise {route_number_string}.\n")
+        print(f"\nViser ledige seter\n")
         for i, [start_airport_code, end_airport_code, seats] in enumerate(results, 1):
             print(f"{i}.  {start_airport_code} → {end_airport_code}: {', '.join(seats)}")
         

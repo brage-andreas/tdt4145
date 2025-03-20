@@ -35,16 +35,12 @@ def get_available_seats(flight_route_id):
 
     sequences = queries.get_sequence_by_route_id(cursor, flight_route_id)
 
-    route_number_string = None
     available_seats = []
 
-    for (sequence_id, start_airport, end_airport, company_code, route_number) in sequences:
+    for (sequence_id, start_airport, end_airport) in sequences:
         seat_configuration = queries.get_seat_configuration(cursor, flight_route_id)        
         taken_seats = queries.get_taken_seats(cursor, flight_route_id, sequence_id)
         all_seats = get_all_seats_from_configuration(seat_configuration)
-
-        if not route_number_string:
-            route_number_string = f"{company_code}{route_number}"
 
         available_seats.append(
             [
@@ -56,4 +52,4 @@ def get_available_seats(flight_route_id):
 
     conn.close()
     
-    return (route_number_string, available_seats)
+    return available_seats

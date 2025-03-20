@@ -129,22 +129,17 @@ def get_taken_seats(cursor, flight_route_id, sequence_number):
 
 get_sequence_by_route_id_query = """
     SELECT
-      dr.DelreiseId,
-      dr.Startflyplasskode,
-      dr.Endeflyplasskode,
-      ftea.FlyselskapsKode,
-      fr.Flyrutenummer
+      DelreiseId,
+      Startflyplasskode,
+      Endeflyplasskode
     FROM
-      Delreise dr
-      LEFT JOIN Flyrute fr ON fr.FlyruteId = dr.FlyruteId
-      LEFT JOIN Flytype ft ON fr.Flytype = ft.Navn
-      LEFT JOIN FlytypeEidAv ftea ON ftea.FlytypeNavn = ft.Navn
+      Delreise
     WHERE
-      fr.FlyruteId = :routeId
+      FlyruteId = :routeId
 """
 def get_sequence_by_route_id(cursor, flight_route_id):
     """
-    Returns: List<sequence_number, start_airport_code, end_airport_code, company_code, route_number>
+    Returns: List<sequence_number, start_airport_code, end_airport_code>
     """
 
     cursor.execute(
